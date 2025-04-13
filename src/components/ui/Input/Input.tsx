@@ -1,13 +1,18 @@
-import { cc } from 'utils/combineClasses'
-import styles from './styles.module.scss'
+import React from 'react';
+import { cc } from 'utils/combineClasses';
+import styles from './styles.module.scss';
 
-interface Props {
-  className?: string
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  className?: string;
 }
 
-const Input = ({ className }: Props) => {
-  return <div className={cc(styles.inputRoot, className)}>Input component</div>
-}
+const Input: React.FC<InputProps> = ({ className, ...props }) => {
+  return (
+    <input
+      className={cc(styles.inputRoot, className)}
+      {...props}
+    />
+  );
+};
 
-
-export default Input
+export default Input;

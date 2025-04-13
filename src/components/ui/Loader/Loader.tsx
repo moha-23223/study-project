@@ -1,22 +1,12 @@
-import { Icons } from 'constants/icons'
-import { cc } from 'utils/combineClasses'
-import CustomSVG from '../CustomSVG'
-import styles from './styles.module.scss'
+import React from 'react';
+import './styles.module.scss';
 
-interface Props {
-  className?: string
-  iconClassName?: string
-  color?: 'first' | 'second' | 'third' | 'fourth'
+interface LoaderProps {
+  size?: 's' | 'm' | 'l';
 }
 
-const Loader = ({ className, iconClassName, color = 'first' }: Props) => {
-  return (
-    <div className={cc(styles.loaderRoot, className)}>
-      <CustomSVG className={cc(styles[`loader_color_${color}`], styles.loaderIcon, iconClassName)}>
-        {Icons.common.loader}
-      </CustomSVG>
-    </div>
-  )
-}
+const Loader: React.FC<LoaderProps> = ({ size = 'm' }) => {
+  return <div className={`loader loader--${size}`} />;
+};
 
-export default Loader
+export default Loader;

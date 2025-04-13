@@ -9,8 +9,10 @@
  */
 
 html {
-  line-height: 1.15; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
+  line-height: 1.15;
+  /* 1 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
 }
 
 /* Sections
@@ -52,10 +54,13 @@ h1 {
  */
 
 hr {
-  height: 0; /* 1 */
-  box-sizing: content-box; /* 1 */
+  height: 0;
+  /* 1 */
+  box-sizing: content-box;
+  /* 1 */
 
-  overflow: visible; /* 2 */
+  overflow: visible;
+  /* 2 */
 }
 
 /**
@@ -64,8 +69,10 @@ hr {
  */
 
 pre {
-  font-size: 1em; /* 2 */
-  font-family: monospace; /* 1 */
+  font-size: 1em;
+  /* 2 */
+  font-family: monospace;
+  /* 1 */
 }
 
 /* Text-level semantics
@@ -85,10 +92,13 @@ a {
  */
 
 abbr[title] {
-  text-decoration: underline; /* 2 */
-  text-decoration: underline dotted; /* 2 */
+  text-decoration: underline;
+  /* 2 */
+  text-decoration: underline dotted;
+  /* 2 */
 
-  border-bottom: none; /* 1 */
+  border-bottom: none;
+  /* 1 */
 }
 
 /**
@@ -108,8 +118,10 @@ strong {
 code,
 kbd,
 samp {
-  font-size: 1em; /* 2 */
-  font-family: monospace; /* 1 */
+  font-size: 1em;
+  /* 2 */
+  font-family: monospace;
+  /* 1 */
 }
 
 /**
@@ -166,11 +178,15 @@ input,
 optgroup,
 select,
 textarea {
-  margin: 0; /* 2 */
+  margin: 0;
+  /* 2 */
 
-  font-size: 100%; /* 1 */
-  font-family: inherit; /* 1 */
-  line-height: 1.15; /* 1 */
+  font-size: 100%;
+  /* 1 */
+  font-family: inherit;
+  /* 1 */
+  line-height: 1.15;
+  /* 1 */
 }
 
 /**
@@ -182,6 +198,16 @@ button,
 input {
   /* 1 */
   overflow: visible;
+}
+
+.org-search-box {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 /**
@@ -247,14 +273,20 @@ fieldset {
  */
 
 legend {
-  display: table; /* 1 */
+  display: table;
+  /* 1 */
 
-  max-width: 100%; /* 1 */
-  padding: 0; /* 3 */
-  box-sizing: border-box; /* 1 */
+  max-width: 100%;
+  /* 1 */
+  padding: 0;
+  /* 3 */
+  box-sizing: border-box;
+  /* 1 */
 
-  color: inherit; /* 2 */
-  white-space: normal; /* 1 */
+  color: inherit;
+  /* 2 */
+  white-space: normal;
+  /* 1 */
 }
 
 /**
@@ -280,8 +312,10 @@ textarea {
 
 [type='checkbox'],
 [type='radio'] {
-  padding: 0; /* 2 */
-  box-sizing: border-box; /* 1 */
+  padding: 0;
+  /* 2 */
+  box-sizing: border-box;
+  /* 1 */
 }
 
 /**
@@ -299,7 +333,8 @@ textarea {
  */
 
 [type='search'] {
-  outline-offset: -2px; /* 2 */
+  outline-offset: -2px;
+  /* 2 */
 
   -webkit-appearance: textfield;
   appearance: textfield;
@@ -321,9 +356,11 @@ textarea {
  */
 
 ::-webkit-file-upload-button {
-  font: inherit; /* 2 */
+  font: inherit;
+  /* 2 */
 
-  -webkit-appearance: button; /* 1 */
+  -webkit-appearance: button;
+  /* 1 */
 }
 
 /* Interactive
