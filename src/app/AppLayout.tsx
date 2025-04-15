@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
-
-import Checkbox from 'components/ui/Checkbox';
 import Button from 'components/ui/Button';
 import Input from 'components/ui/Input';
 import MultiDropdown from 'components/ui/MultiDropdown';
@@ -13,47 +11,96 @@ interface Props {
 
 interface RepoDetailsProps {
   onBack: () => void;
-  repoIndex: number;
+  repo: any;
 }
 
-const RepoDetails: React.FC<RepoDetailsProps> = ({ onBack, repoIndex }) => {
-  const branches = ['branch-1', 'branch-2', 'branch-3', 'branch-4', 'branch-5'];
+const fetchReposByOrg = async (orgName: string) => {
+  const res = await fetch(`https://api.github.com/orgs/${orgName}/repos`);
+  if (!res.ok) throw new Error('Failed to fetch organization repos');
+  return res.json();
+};
+const fetchReposByUser = async (username: string) => {
+  const res = await fetch(`https://api.github.com/users/${username}/repos`);
+  if (!res.ok) throw new Error('Failed to fetch user repos');
+  return res.json();
+};
 
+const fetchRepoDetails = async (owner: string, repo: string) => {
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+  if (!res.ok) throw new Error('Failed to fetch repo details');
+  return res.json();
+};
+
+const RepoDetails: React.FC<RepoDetailsProps> = ({ onBack, repo }) => {
   return (
     <div className="repo-details">
       <div className="repo-header">
-        <button className="back-btn" onClick={onBack}>← </button>
-        <img
-          src={
-            repoIndex === 1
-              ? 'https://images.unsplash.com/photo-1589927986089-35812388d1a1?auto=format&fit=crop&w=50&h=50'
-              : 'https://via.placeholder.com/24/FF5C5C/FFFFFF?text=G'
-          }
-          alt="G"
-          className="repo-avatar"
-        />
-        <span className="repo-name">git-repo-name #{repoIndex + 1}</span>
+        <button className="back-btn" onClick={onBack}>←</button>
+        <img src={repo.owner?.avatar_url} alt={repo.name} className="repo-avatar" />
+        <span className="repo-name">{repo.full_name}</span>
       </div>
 
       <div className="repo-section">
         <h3>Description</h3>
-        <p>My first repository on GitHub!</p>
+        <p>{repo.description || 'No description provided.'}</p>
       </div>
 
       <div className="repo-section">
-        <h3>Branches List</h3>
-        <ul className="branch-list">
-          {branches.map((branch) => (
-            <li key={branch}>{branch}</li>
-          ))}
-        </ul>
+        <h3>Default Branch</h3>
+        <p>{repo.default_branch}</p>
+      </div>
+
+      <div className="repo-section">
+        <h3>Stats</h3>
+        <p>⭐ Stars: {repo.stargazers_count}</p>
+        <p>🍴 Forks: {repo.forks_count}</p>
+        <p>📅 Updated: {new Date(repo.updated_at).toLocaleDateString()}</p>
       </div>
     </div>
   );
 };
 
 const AppLayout: React.FC<Props> = ({ children }) => {
-  const [selectedRepo, setSelectedRepo] = useState<number | null>(null);
+  interface SearchOption {
+    label: string;
+    value: string;
+    type: 'user' | 'org';
+  }
+  
+  const [selectedOrg, setSelectedOrg] = useState<SearchOption[]>([]);
+   // Accepting array for multiple selections
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [repoList, setRepoList] = useState<any[]>([]);
+  const [repoDetails, setRepoDetails] = useState<any | null>(null);
+  const [showResults, setShowResults] = useState(false);
+
+  const handleSearch = async () => {
+    if (!selectedOrg.length || !searchTerm.trim()) {
+      alert('Please select whether you are searching by user or organization, and enter a name.');
+      return;
+    }
+  
+    setIsLoading(true);
+    setRepoDetails(null);
+    setShowResults(false);
+  
+    try {
+      const selectedOption = selectedOrg[0]; // full object: { label, value, type }
+  
+      const repos =
+        selectedOption.type === 'org' 
+          ? await fetchReposByOrg(searchTerm.trim())
+          : await fetchReposByUser(searchTerm.trim());
+  
+      setRepoList(repos);
+      setShowResults(true);
+    } catch (err) {
+      console.error('API call failed:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="app-layout">
@@ -62,66 +109,73 @@ const AppLayout: React.FC<Props> = ({ children }) => {
       <header className="app-header">
         <h1 className="app-logo">My App</h1>
         <div className="app-header-controls">
-          <MultiDropdown />
+        <MultiDropdown
+          onSelect={(selectedOptions) => setSelectedOrg(selectedOptions)}
+          />
+
         </div>
       </header>
-
-      <section className="ui-preview">
-        <p>Loading large...</p>
-        <Loader size="l" />
-        <p>Loading medium...</p>
-        <Loader size="m" />
-        <p>Loading small...</p>
-        <Loader size="s" />
-        <Checkbox checked={false} onChange={(val) => console.log('Checked:', val)} />
-        <Checkbox checked={true} />
-        <Checkbox checked={true} disabled />
-      </section>
 
       <main className="main-content">
         <div className="org-search-container">
           <div className="org-search-box">
             <Input
               type="text"
-              placeholder="Enter organization name"
+              placeholder="Search repository..."
               className="org-search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearch();
+              }}
             />
-            <Button className="org-search-button">🔍</Button>
+            <Button className="org-search-button" onClick={handleSearch}>
+              Search
+            </Button>
           </div>
 
-          {/* Conditional Rendering */}
-          {selectedRepo !== null ? (
-            <RepoDetails repoIndex={selectedRepo} onBack={() => setSelectedRepo(null)} />
-          ) : (
+          {isLoading && <Loader size="m" />}
+
+          {!isLoading && showResults && (
             <>
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div className="cardRoot" key={i}>
-                  <img
-                    className="repo-avatar"
-                    src={
-                      i === 1
-                        ? 'https://images.unsplash.com/photo-1589927986089-35812388d1a1?auto=format&fit=crop&w=50&h=50'
-                        : 'https://via.placeholder.com/50/FF5C5C/FFFFFF?text=G'
-                    }
-                    alt="R"
-                    onClick={() => setSelectedRepo(i)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <div className="repo-content">
-                    <strong className="repo-name">git-repo-name</strong>
-                    <p className="repo-user">git-user</p>
-                    <div className="repo-meta">
-                      <span className="repo-stars">⭐ 123</span>
-                      <span className="repo-separator">•</span>
-                      <span className="repo-updated">Updated 21 Jul</span>
+              {repoDetails ? (
+                <RepoDetails repo={repoDetails} onBack={() => setRepoDetails(null)} />
+              ) : (
+                <div className="repo-list">
+                  {repoList.map((repo) => (
+                    <div className="cardRoot" key={repo.id}>
+                      <img
+                        className="repo-avatar"
+                        src={repo.owner.avatar_url}
+                        alt={repo.name}
+                        onClick={async () => {
+                          try {
+                            const details = await fetchRepoDetails(repo.owner.login, repo.name);
+                            setRepoDetails(details);
+                          } catch (e) {
+                            console.error(e);
+                          }
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      />
+                      <div className="repo-content">
+                        <strong className="repo-name">{repo.name}</strong>
+                        <p className="repo-user">{repo.owner.login}</p>
+                        <div className="repo-meta">
+                          <span className="repo-stars">⭐ {repo.stargazers_count}</span>
+                          <span className="repo-separator">•</span>
+                          <span className="repo-updated">
+                            Updated {new Date(repo.updated_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </>
           )}
 
-          {/* Any nested children passed in */}
           {children}
         </div>
       </main>
