@@ -1,7 +1,326 @@
-@use 'styles/mixins' as *;
+@use 'styles/mixins/index.scss' as *;
+@use './normalize.css';
+@use './colors';
+@use './fonts';
+@use './root-variables';
+@use './themes/light';
 
-.mainRoot {
+
+
+
+.org-search-button {
+  background-color: #f44336;
+  /* red */
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.org-search-button:hover {
+  background-color: #ff6f61;
+  
+}
+
+
+
+:root {
+  color: var(--text-primary);
+  font-size: min(1.25vw, 16px);
+  font-family: Montserrat, sans-serif;
+  direction: ltr;
+  background-color: var(--background);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
   height: 100%;
+}
 
-  overflow: auto;
+html {
+  height: 100lvh;
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  height: 100vh;
+  height: 100lvh;
+  color: var(--text-primary);
+  word-spacing: 0.1em;
+  background-color: var(--background-primary);
+  overflow: hidden;
+  user-select: none;
+}
+
+img {
+  overflow-clip-margin: border-box;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+input,
+textarea,
+label,
+button,
+*[role='button'],
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input {
+  border-radius: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.rtl {
+  direction: rtl;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+// Components unrelated to card
+.org-search-box {
+  display: flex;
+  align-items: center;
+  width: 280px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #d1d5db;
+}
+
+.org-search-input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+  color: #333;
+  background-color: #fff;
+}
+
+.org-search-input:focus {
+  border-color: #f44336;
+  outline: none;
+}
+
+.org-search-input:disabled {
+  background-color: #f5f5f5;
+  border-color: #eee;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.org-search-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.org-search-button:hover {
+  background-color: #ff6f61;
+}
+
+.org-search-button:disabled {
+  background-color: #e0e0e0;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.custom-checkbox {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .checkbox-mark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  &.checked .checkbox-mark {
+    background-color: #fff;
+    border-color: #ff5c5c;
+
+    &::after {
+      content: '✔';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      font-size: 14px;
+      color: #ff5c5c;
+    }
+  }
+
+  &.disabled .checkbox-mark {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    color: #aaa;
+  }
+
+  input:focus + .checkbox-mark {
+    border-color: #ff5c5c;
+  }
+}
+
+.loader {
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top: 3px solid #ff5c5c;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+
+  &--s {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+
+  &--m {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+
+  &--l {
+    width: 48px;
+    height: 48px;
+    border-width: 4px;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.repo-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #FF5C5C;
+  color: #e5e7eb;
+  font-family: Roboto;
+  font-size: 40px;
+  font-style: bold;
+  text-align: center;
+}
+.org-search-button {
+  background-color: #f44336;
+  /* red */
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+.org-search-button:hover {
+  background-color: #ff6f61;
+  
+}
+.searchButton {
+  padding: 8px 16px;
+  background-color: #f3f4f6; // Tailwind gray-100
+  color: #374151; // Tailwind gray-700
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #d1d5db; // Tailwind gray-300
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    background-color: #e5e7eb; // gray-200
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  &:active {
+    background-color: #d1d5db; // gray-300
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); // blue focus ring
+  }
 }
